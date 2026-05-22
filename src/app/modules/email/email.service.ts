@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 export const verifyEmailConnection = async (): Promise<void> => {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.warn(
-      "⚠️  SMTP credentials not configured. Receipt emails will not be sent."
+      "⚠️  SMTP credentials not configured. Receipt emails will not be sent.",
     );
     return;
   }
@@ -29,7 +29,9 @@ export const verifyEmailConnection = async (): Promise<void> => {
     console.log("✅ SMTP connection verified — receipt emails are enabled.");
   } catch (error) {
     console.warn("⚠️  SMTP connection failed:", error);
-    console.warn("   Receipt emails will not be sent until SMTP is configured.");
+    console.warn(
+      "   Receipt emails will not be sent until SMTP is configured.",
+    );
   }
 };
 
@@ -46,7 +48,7 @@ export interface StripeReceiptEmailData {
  * Returns true if sent successfully, false otherwise.
  */
 export const sendStripeReceiptEmail = async (
-  data: StripeReceiptEmailData
+  data: StripeReceiptEmailData,
 ): Promise<boolean> => {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.warn("⚠️  Skipping receipt email — SMTP not configured.");

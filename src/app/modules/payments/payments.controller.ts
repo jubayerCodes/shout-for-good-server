@@ -17,7 +17,7 @@ export const createDonation = async (req: Request, res: Response) => {
   try {
     const {
       amount,
-      currency = "aud",
+      currency = "usd",
       frequency,
       interval: clientInterval,
       intervalCount: clientIntervalCount,
