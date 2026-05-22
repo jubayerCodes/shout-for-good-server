@@ -15,12 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 const mongoose = require("mongoose");
 const app_1 = __importDefault(require("./app"));
+const email_service_1 = require("./app/modules/email/email.service");
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose.connect(process.env.DB_URL);
         app_1.default.listen(process.env.PORT, () => {
             console.log(`Server is running on port ${process.env.PORT}`);
         });
+        yield (0, email_service_1.verifyEmailConnection)();
     }
     catch (error) {
         console.log(error);

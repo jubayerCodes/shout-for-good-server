@@ -46,6 +46,14 @@ const PaymentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    issueReceipt: {
+        type: Boolean,
+        default: true,
+    },
+    receiptSent: {
+        type: Boolean,
+        default: false,
+    },
 }, {
     timestamps: true,
 });

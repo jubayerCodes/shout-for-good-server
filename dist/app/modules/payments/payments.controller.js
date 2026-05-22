@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createDonation = void 0;
+exports.sendReceipt = exports.createDonation = void 0;
 const stripe_1 = require("./stripe");
 const payments_model_1 = require("./payments.model");
+const email_service_1 = require("../email/email.service");
 const createDonation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { amount, currency = "aud", frequency, interval: clientInterval, intervalCount: clientIntervalCount, email, firstName, lastName, companyName, phone, issueReceipt, dedication, } = req.body;
@@ -77,6 +78,8 @@ const createDonation = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 },
                 paymentId: paymentIntent.id,
                 paymentStatus: paymentIntent.status,
+                issueReceipt: issueReceipt !== null && issueReceipt !== void 0 ? issueReceipt : true,
+                receiptSent: false,
             });
             res.status(200).json({
                 clientSecret: paymentIntent.client_secret,
@@ -192,6 +195,8 @@ const createDonation = (req, res) => __awaiter(void 0, void 0, void 0, function*
             },
             paymentId: subscription.id,
             paymentStatus: subscription.status,
+            issueReceipt: issueReceipt !== null && issueReceipt !== void 0 ? issueReceipt : true,
+            receiptSent: false,
         });
         res.status(200).json({
             clientSecret,
@@ -205,3 +210,35 @@ const createDonation = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.createDonation = createDonation;
+const sendReceipt = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { paymentIntentId, email } = req.body;
+        if (!paymentIntentId || !email) {
+            res.status(400).json({
+                message: "Missing required fields: paymentIntentId, email",
+            });
+            return;
+        }
+        const paymentIntent = yield stripe_1.stripe.paymentIntents.retrieve(paymentIntentId, { expand: ["latest_charge"] });
+        const charge = paymentIntent.latest_charge;
+        const receiptUrl = charge === null || charge === void 0 ? void 0 : charge.receipt_url;
+        if (!receiptUrl) {
+            res.status(404).json({ message: "Receipt not available yet" });
+            return;
+        }
+        const sent = yield (0, email_service_1.sendStripeReceiptEmail)({
+            to: email,
+            receiptUrl,
+            amount: paymentIntent.amount,
+            currency: paymentIntent.currency,
+        });
+        yield payments_model_1.Payment.findOneAndUpdate({ paymentId: paymentIntentId }, { receiptSent: true, paymentStatus: "succeeded" });
+        res.status(200).json({ sent, receiptUrl });
+    }
+    catch (error) {
+        console.error("Send receipt error:", error);
+        const message = error instanceof Error ? error.message : "Internal server error";
+        res.status(500).json({ message });
+    }
+});
+exports.sendReceipt = sendReceipt;

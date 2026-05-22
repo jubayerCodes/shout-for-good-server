@@ -71,7 +71,6 @@ export const sendStripeReceiptEmail = async (
       html,
     });
 
-    console.log(`📧 Receipt email sent to ${data.to}`);
     return true;
   } catch (error) {
     console.error("❌ Failed to send receipt email:", error);

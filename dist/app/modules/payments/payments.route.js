@@ -5,3 +5,4 @@ const express_1 = require("express");
 const payments_controller_1 = require("./payments.controller");
 exports.PaymentRoutes = (0, express_1.Router)();
 exports.PaymentRoutes.post("/donate", payments_controller_1.createDonation);
+exports.PaymentRoutes.post("/send-receipt", payments_controller_1.sendReceipt);
