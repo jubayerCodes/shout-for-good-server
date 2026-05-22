@@ -9,17 +9,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
-    "build": "tsc -b && node dist/server.js"
+    "build": "tsc"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "mongoose": "^9.6.2"
+    "mongoose": "^9.6.2",
+    "nodemailer": "^8.0.7",
+    "stripe": "^22.1.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.6",
     "@types/node": "^25.9.1",
+    "@types/nodemailer": "^8.0.0",
     "tsx": "^4.22.3",
     "typescript": "^6.0.3"
   }
