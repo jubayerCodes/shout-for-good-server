@@ -58,7 +58,6 @@ const sendStripeReceiptEmail = (data) => __awaiter(void 0, void 0, void 0, funct
             subject: `Donation Receipt — ${amountFormatted} — Thank you!`,
             html,
         });
-        console.log(`📧 Receipt email sent to ${data.to}`);
         return true;
     }
     catch (error) {

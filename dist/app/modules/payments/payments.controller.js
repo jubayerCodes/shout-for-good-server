@@ -15,7 +15,7 @@ const payments_model_1 = require("./payments.model");
 const email_service_1 = require("../email/email.service");
 const createDonation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { amount, currency = "aud", frequency, interval: clientInterval, intervalCount: clientIntervalCount, email, firstName, lastName, companyName, phone, issueReceipt, dedication, } = req.body;
+        const { amount, currency = "usd", frequency, interval: clientInterval, intervalCount: clientIntervalCount, email, firstName, lastName, companyName, phone, issueReceipt, dedication, } = req.body;
         if (!amount || !email || !firstName || !lastName) {
             res.status(400).json({
                 message: "Missing required fields: amount, email, firstName, lastName",
